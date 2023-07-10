@@ -4,30 +4,21 @@ import pandas as pd
 
 import torch
 import torchvision
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 from torchvision import datasets, models, transforms
 from torch.utils.data.sampler import SubsetRandomSampler
 
 from random import shuffle
-from PIL import Image
-import cv2
 import os
-import shutil
 
 
 def create_data_loaders(data_dir, batch_size, valid_size=0.2):
-    '''
-    This is an optional function that you may or may not need to implement
-    depending on whether you need to use data loaders or not
-    '''
+    
+
     transform = {
         'train': transforms.Compose([
-            transforms.Resize([224,224]), # Resizing the image as the VGG only take 224 x 244 as input size
-            transforms.RandomHorizontalFlip(p=0.5), # Flip the data horizontally
+            transforms.Resize([224,224]), 
+            transforms.RandomHorizontalFlip(p=0.5), 
             transforms.RandomVerticalFlip(p=0.5),
-            #TODO if it is needed, add the random crop
             transforms.RandomResizedCrop(224),
             transforms.ColorJitter(brightness=0.3, contrast=0, saturation=0, hue=0),
             transforms.ToTensor(),
@@ -41,7 +32,6 @@ def create_data_loaders(data_dir, batch_size, valid_size=0.2):
     }
     
     tr_dir = os.path.join(data_dir, 'train')
-    # ImageFloder with root directory and defined transformation methods for batch as well as data augmentation
     train_data = torchvision.datasets.ImageFolder(root=tr_dir, transform=transform['train'])
     val_data = torchvision.datasets.ImageFolder(root=tr_dir, transform=transform['test'])
 
@@ -54,7 +44,7 @@ def create_data_loaders(data_dir, batch_size, valid_size=0.2):
     train_sampler = SubsetRandomSampler(train_idx) # Sampler for splitting train and val images
     val_sampler = SubsetRandomSampler(val_idx)
     train_loader = torch.utils.data.DataLoader(train_data,
-                   sampler=train_sampler, batch_size=batch_size) # DataLoader provides data from traininng and validation in batches
+                   sampler=train_sampler, batch_size=batch_size) 
     valid_loader = torch.utils.data.DataLoader(val_data,
                    sampler=val_sampler, batch_size=batch_size)
     

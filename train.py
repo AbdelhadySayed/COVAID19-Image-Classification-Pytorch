@@ -11,14 +11,8 @@ import copy
 
 
 def train(model, train_loader, valid_loader, train_size, valid_size, criterion, optimizer):
-    '''
-    TODO: Complete this function that can take a model and
-          data loaders for training and will get train the model
-          Remember to include any debugging/profiling hooks that you might need
-    '''
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    # train the model
     
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')    
     
     start = time.time()
     model.train() 
@@ -50,14 +44,6 @@ def train(model, train_loader, valid_loader, train_size, valid_size, criterion, 
     val_loss /= valid_size
     val_acc = 100.0 * correct_val /valid_size        
     epoch_time = time.time() - start
-        # print(
-        #     "Epoch {}: train loss {:.3f}, val loss {:.3f}, Accuracy: {}/{} ({:.0f}%) in {:.1f} sec\n".format(
-        #         i, train_loss, val_loss, correct, valid_size, 100.0 * correct /valid_size, epoch_time)
-        # )
-        # print(
-        #     "Epoch %d: train loss %.3f, val loss %.3f, Accuracy: %.0f/%.0f, %.0f in %.1f sec"
-        #     % (i, train_loss, val_loss, correct, valid_size, 100.0 * correct /valid_size, epoch_time)
-        # )
     model_wts = copy.deepcopy(model.state_dict())
     model.load_state_dict(model_wts)
     return model, train_loss, val_loss, train_acc, val_acc, epoch_time 

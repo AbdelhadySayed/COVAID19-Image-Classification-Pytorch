@@ -1,21 +1,16 @@
 
-import numpy as np
-import pandas as pd
 
 import torch
 import torchvision
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, models, transforms
+import matplotlib.pyplot as plt
+import argparse
+
 from train import train
 from eval import test
 from data_loaders import create_data_loaders
 from model import net
-import matplotlib.pyplot as plt
-
-import argparse
-
 
 
 
@@ -23,25 +18,14 @@ def main(args):
     
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     
-    '''
-    TODO: Initialize a model by calling the net function
-    '''
+    
     model=net()
-#     model.cuda()
+     model.cuda()
     model.to(device)
-    '''
-    TODO: Create your loss and optimizer
-    '''
+    
     
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
-    
-    '''
-    TODO: Call the train function to start training your model
-    Remember that you will need to set up a way to get training data from S3
-    '''
-    #train_loader = create_data_loaders(args.train_data_dir, args.batch_size)
-    #test_loader = create_data_loaders(args.test_data_dir, args.batch_size)
     
     train_loader, valid_loader, test_loader, train_size, valid_size = create_data_loaders(args.data_dir, args.batch_size)
     epoch_times = []
@@ -91,7 +75,6 @@ def main(args):
     ax = fig.add_subplot()
     bp = plt.plot(epochs, train_accs, color='orange', label='Train Accuracy', lw=1)
     bp = plt.plot(epochs, test_accs, color='blue', label='Test Accuracy', lw=1)
-    ax.set_xticklabels(epochs)
     plt.xticks(fontsize=12, rotation=90)
     plt.yticks(fontsize=12)
     plt.legend(loc=4, prop={'size': 12})
@@ -102,33 +85,16 @@ def main(args):
     ax = fig.add_subplot()
     bp = plt.plot(epochs, train_losses, color='orange', label='Train Loss', lw=1)
     bp = plt.plot(epochs, test_losses, color='blue', label='Test Loss', lw=1)
-    ax.set_xticklabels(epochs)
     plt.xticks(fontsize=12, rotation=90)
     plt.yticks(fontsize=12)
     plt.legend(loc=4, prop={'size': 12})
     plt.show()
 
-    # for epoch in range(1, args.epochs + 1):
-    #     print("Epoch", epoch, ":")
-    #     model =train(model, train_loader, valid_loader, train_size, valid_size, criterion, optimizer)
 
-    #     '''
-    #     TODO: Test the model to see its accuracy
-    #     '''
-    #     test(model, test_loader, criterion)
-    #data_dir = './COVID19-DATASET'
-    #test_data_dir = './COVID19-DATASET/test'
-    #train_loader, valid_loader, test_loader = create_data_loaders(data_dir, 32)
 
-    
-    # print("training")           
-    # model=train(model, train_loader, valid_loader, criterion, optimizer, args.epochs)
-    # print("\n=================================================================")           
-    # print("testing")           
 
-    # test(model, test_loader, criterion)
-    # print("\n=================================================================")           
-       
+
+
 
 
 if __name__ == "__main__":
@@ -140,13 +106,7 @@ if __name__ == "__main__":
         metavar="N",
         help="input batch size for training (default: 32)",
     )
-#     parser.add_argument(
-#         "--test-batch-size",
-#         type=int,
-#         default=1000,
-#         metavar="N",
-#         help="input batch size for testing (default: 1000)",
-#     )
+#    
     parser.add_argument(
         "--epochs",
         type=int,
@@ -159,7 +119,7 @@ if __name__ == "__main__":
     )
     
     parser.add_argument(
-        "--data-dir", # the actual variable data_dir
+        "--data-dir", 
         type=str,
         default="./COVID19-DATASET",
         metavar="DD",
